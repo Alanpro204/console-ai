@@ -7,6 +7,7 @@ client = Groq(api_key=API_KEY)
 messages = []
 
 
+
 def complete():
     print("Assistant:\n->", end="")
     completion = client.chat.completions.create(
