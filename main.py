@@ -12,21 +12,56 @@ os.system("cls")
 
 proxy_url = PROXY
 
-client = OpenAI(api_key=API_KEY, http_client=httpx.Client(proxy=proxy_url))
-#client = Groq(api_key=API_KEY_GROQ, http_client=httpx.Client(proxy=proxy_url))
+models = [
+    {
+        "source": "openai",
+        "model": "gpt-4o"
+    },
+    {
+        "source": "openai",
+        "model": "gpt-4o-mini"
+    },
+    {
+        "source": "groq",
+        "model": "llama-3.2-90b-vision-preview"
+    }
+]
+
+print(Fore.LIGHTCYAN_EX + "Models:")
+i = 0
+for model in models:
+    print(Fore.WHITE + str(i) + ": " + Fore.LIGHTYELLOW_EX + model["model"])
+    i += 1
+
+i = int(input(Fore.LIGHTCYAN_EX + "Selecciona un modelo: " + Fore.WHITE))
+os.system("cls")
+
+model = models[i]["model"]
+q_letras = 15 + len(model)
+
+for l in range(q_letras):
+    print("-", end="")
+print("")
+
+if models[i]["source"] == "openai":
+    client = OpenAI(api_key=API_KEY, http_client=httpx.Client(proxy=proxy_url))
+if models[i]["source"] == "groq":
+    client = Groq(api_key=API_KEY_GROQ, http_client=httpx.Client(proxy=proxy_url))
 
 messages = []
-
+print(Fore.WHITE + "| " + Fore.LIGHTYELLOW_EX + "Chat with: " + model + Fore.WHITE + " |")
+print(Fore.WHITE, end="")
+for l in range (q_letras):
+    print("-", end="")
+print("")
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
-
 def complete():
-    model = "gpt-4o-mini"
     #model = "llama-3.2-90b-vision-preview"
-    print(Fore.CYAN + model + ":\n->" + Fore.WHITE, end="")
+    print(Fore.LIGHTCYAN_EX + model + ":" + Fore.CYAN + "\n->" + Fore.WHITE, end="")
     completion = client.chat.completions.create(
         model=model,
         messages=messages,
@@ -44,7 +79,7 @@ def complete():
 
 
 while True:
-    print(Fore.CYAN + "User:\n->" + Fore.WHITE, end="")
+    print(Fore.LIGHTCYAN_EX + "User:" + Fore.CYAN + "\n->" + Fore.WHITE, end="")
     entrada = ""
     images = []
     while True:
